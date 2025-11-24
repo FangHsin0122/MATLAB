@@ -27,9 +27,10 @@ figure(2)
 plot(t, pos_y_pixels, 'ko', 'DisplayName', 'Measured Data(c2d)');
 hold on;
 
-sys_C22 = tfest(data, 2, 2);
-step_sys_C22 = c2d(sys_C22, Ts_sec, 'zoh')
-[y_model, t_model] = step(step_sys_C22 * input_step_rt, t_x_sec(end));
+sys_C22 = tfest(data, 2, 2); % continuous time controller
+step_sys_D22 = c2d(sys_C22, Ts_sec, 'zoh') % discrete time controller
+[y_model, t_model] = step(input_step_rt * step_sys_D22, t_x_sec(end));
+%
 plot(t_model, y_model, '-', 'DisplayName', 'Model - 2p2z');
 
 xlabel('Time (s)');
@@ -40,5 +41,42 @@ grid on;
 
 
 figure(3)
-rlocus(step_sys_C22)
+rlocus(step_sys_D22)
+
+figure(4)
+bode(step_sys_D22)
+
+figure(5)
+nyquist(step_sys_D22)
+
+%%
+%{
+ζ = zeta: damping ratio
+Tr: rise time = 1.8/ omega_n, for zeta = 0.5
+Tp: peak time = pi/ (omega_n * sqrt(1 - zeta^2))
+Ts: settling time = 4/ (zeta* omeaga_n)
+Mp: overshoot = exp(- pi* zeta / ( sqrt(1 - zeta^2)))
+
+r: magnitude = exp(- zeta* omega_n* T)
+theta: phase = omega_n* T* ( sqrt(1 - zeta^2))
+THEN, 
+zeta = -ln(r)/(sqrt(theta^2 + (ln(r))^2)
+omega_n = 1/T * (sqrt(theta^2 + (ln(r))^2)
+tau: time constant = 1/(zeta* omega_n) = -T/ln(r)
+%}
+
+%% Get step response charateristic
+
+StepINFO = stepinfo(y_model,t_model)
+
+Mp = StepINFO.Overshoot;
+Tsettling = StepINFO.SettlingTime;
+Tr = StepINFO.RiseTime;
+
+y_final = y_model(end)
+
+%% P controller
+
+Kp = 10;
+D = Kp;
 
