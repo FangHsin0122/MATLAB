@@ -28,8 +28,9 @@ plot(t, pos_y_pixels, 'ko', 'DisplayName', 'Measured Data(c2d)');
 hold on;
 
 sys_C22 = tfest(data, 2, 2);
-step_sys_C22 = c2d(sys_C22, Ts_sec, 'zoh')
-[y_model, t_model] = step(step_sys_C22 * input_step_rt, t_x_sec(end));
+sys_D22 = c2d(sys_C22, Ts_sec, 'zoh')
+[plant_num, plant_den] = tfdata(sys_D22, 'v');
+[y_model, t_model] = step(sys_D22 * input_step_rt, t_x_sec(end));
 plot(t_model, y_model, '-', 'DisplayName', 'Model - 2p2z');
 
 xlabel('Time (s)');
@@ -40,5 +41,12 @@ grid on;
 
 
 figure(3)
-rlocus(step_sys_C22)
+rlocus(sys_D22);zgrid;axis equal;
+
+figure(4)
+bode(sys_D22);grid on;
+
+figure(5)
+nyquist(sys_D22);grid on;
+
 

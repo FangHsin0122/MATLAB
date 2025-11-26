@@ -112,15 +112,12 @@ figure(8)
 nyquist(OL);grid on;
 
 figure(9)
-[u, ut] = step(9 * CL_r2u, t_x_sec(end))
-figure(10)
-[y, yt] = step(9 * CL_r2y, t_x_sec(end))
-%plot(ut, u, '-', 'DisplayName', sprintf('CL_r2u; PI; Kp = %.3f; Ki = %.3f; Kd = %.3f', Kp, Ki, Kd));
-%plot(ut, u, '-', 'DisplayName', sprintf('CL_r2u; PI; Kp = %.3f; Ki = %.3f; Kd = %.3f', Kp, Ki, Kd));
+[u, ut] = step(9 * CL_r2u, t_x_sec(end));
+plot(ut, u, '-', 'DisplayName', sprintf('CL_R2U; PI; Kp = %.3f; Ki = %.3f; Kd = %.3f', Kp, Ki, Kd));
 
-%xlabel('Time (s)');
-%ylabel('Output Positions (pixels)');
-%title('Step Response PID Controller');
-%legend('Location','Best');grid on;
+xlabel('Time (s)');
+ylabel('Output Positions (pixels)');
+title('Step Response PID Controller');
+legend('Location','Best');grid on;
 
-%stepinfo(y_pid,t_pid)
+stepinfo(y_pid,t_pid)
